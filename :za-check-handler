@@ -49,7 +49,7 @@ if (( $+ICE[check] )) {
                 exit;
             }
     }
-    (( 0 ))
+    return 0;
 }
 
 # vim: ft=zsh:et:sw=4:ts=2:sts=4:fdm=marker:fmr={{{,}}}:
