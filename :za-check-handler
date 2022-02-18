@@ -1,5 +1,5 @@
-# Original work Copyright (c) 2019-2020 Sebastian Gniazdowski
-# Modified work Copyright (c) 2021-2022 Lucas Burns
+# Copyright (c) 2021-2022 Lucas Burns
+# Do whatever
 
 emulate -RL zsh
 setopt extendedglob warncreateglobal typesetsilent noshortloops
@@ -9,7 +9,8 @@ setopt extendedglob warncreateglobal typesetsilent noshortloops
     local type="$1" url="$2" id_as="$3" dir="$4"
 
 if (( $+ICE[check] )) {
-    builtin zmodload -Fa zsh/parameter p:commands
+    builtin zmodload -Fa zsh/parameter p:commands p:functions
+    builtin zmodload -Fa zsh/files b:zf_rm
     local check retval
     local -a match mbegin mend
     local -a checks
@@ -19,43 +20,36 @@ if (( $+ICE[check] )) {
         @zinit-substitute 'check'
         eval "${${(M)check:#(#b)(\!|)(*)}:+(( $match[1] $+commands[$match[2]] ))}" || \
             {
+                # Available variables: $___id, $plugin, $user, $local_path
+                # print -rl -- "$(whence -vm '*zinit*')"
+
+                setopt localtraps
+                trap "[[ -d $local_path ]] && zf_rm -Rdf $local_path" EXIT INT
+
+                ICE[atclone]=
+                ICE=()
+
                 # FIX: Why does zinit clear the screen when printing?
+                # Is it because of a lack of a newline?
+
                 (( ! OPTS[opt_-q,--quiet] )) && {
+
                     if (( ! $+commands[$match[2]] )) {
-                        print -Pr --
-                            "%F{57}check annex: %F{1}%BYou don't have %F{2}$match[2] and need to" \
-                            "negate %F{2}$match[2] for the evaluation to become true%f"
+                        +zinit-message \
+                            "{pre}check annex: {error}You don't have {obj2}$match[2]{rst}{error} and need to" \
+                            "negate {obj2}$match[2]{rst}{error} for the evaluation to become true{rst}{nl}"
+                    } else {
+                        +zinit-message \
+                            "{pre}check annex: {error}It's not true that you {uname}don't{error} have" \
+                            "{obj}${match[2]}{error}{rst}{nl}"
                     }
-
-                    # if (( $+commands[$match[2]] )) {
-                    #     print -Pr -- \
-                    #         "%F{57}check annex: %F{1}%BIt's not true that you %Udon't%u have %F{2}${match[2]}%f"
-                    # }
-
-                    ##################
-
-                    # if (( ! $+commands[$match[2]] )) {
-                    #     +zinit-message \
-                    #         "{pre}check annex: {error}You don't have {obj2}$match[2]{rst}{error} and need to" \
-                    #         "negate {obj2}$match[2]{rst}{error} for the evaluation to become true{rst}"
-                    # }
-                    #
-                    # if (( $+commands[$match[2]] )) {
-                    #     +zinit-message \
-                    #         "{pre}check annex: {error}It's not true that you don't have {obj}${match[2]}{error}{rst}"
-                    # }
                 }
 
                 command sleep 0.002
                 exit;
             }
     }
-
-    (( retval != 0 )) && {
-        ICE[atclone]=
-        exit
-    }
-
+    (( 0 ))
 }
 
 # vim: ft=zsh:et:sw=4:ts=2:sts=4:fdm=marker:fmr={{{,}}}:
