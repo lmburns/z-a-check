@@ -51,6 +51,27 @@ zinit depth'3' lucid wait'0a' wait'[[ ! -v commands[loop] ]]' for \
   equivalent of a [`fswatch`](https://github.com/emcrisostomo/fswatch) command
   being ran for every plugin I used.
 
+### Goal
+* It would be nice to have a fork of `zinit` that has an ice similar to the
+  `has'!'` I mentioned above that would allow for the expansion of words like
+  `%PLUGIN%`.
+* The **downside** of this annex is that every time `.zshrc` is sourced, if the
+  program evaluates to `false` and the item is being pulled from something like
+  `from'gh-r'` and does not need to be compiled, the program is downloaded, an
+  error message is displayed, and then the folder is deleted. This should be a
+  sign to the user to remove one version of the program (i.e., the other location
+  of the binary or the `zinit` line from the `.zshrc`).
+* If you do not want this to happen, use the `wait'[[ ! -v commands[<cmd>] ]]'`
+  syntax as mentioned above. Or use my fork of `zinit` and go through and write
+  `has'!<plugin>'` for every plugin.
+
+* So a possible future **goal** would be to find a way to prevent the package
+  from every being downloaded in the first place. This would mean a new type of
+  hook needs to be created to allow for a `pre-clone:hook`/`pre-pull:hook`. There
+  is already a `hook:preinit`.
+* A possible workaround is to just find a way to run this annex before the pull
+  and write the results to another file.
+
 
 ### Notes
 * The `syntax` folder contains two `zsh.vim` files
