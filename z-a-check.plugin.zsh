@@ -9,8 +9,24 @@ autoload -Uz :za-check-handler
 # An empty stub to fill the help handler fields
 :za-check-null-handler() { :; }
 
-# hook:\!atclone-20 \
-# hook:preinit-10 \
+# hook:preinit-<->
+
+# hook:atinit-<->
+# hook:!atinit-<->
+
+# hook:before-load-<->
+
+# hook:atload-<->
+# hook:!atload-<->
+
+# hook:atclone-<->
+# hook:!atclone-<->
+
+# hook:atpull-<->
+# hook:!atpull-<->
+# hook:%atpull-<-> - always ran regardless of update
+
+# hook:atdelete-<->
 
 # Register !atclone hook
 @zinit-register-annex "z-a-check" \
@@ -18,9 +34,3 @@ autoload -Uz :za-check-handler
     :za-check-handler \
     :za-check-null-handler \
     "check''" # register a new ice-mod: test''
-
-# Register !atpull hook
-# @zinit-register-annex "z-a-check" \
-#     hook:\!atpull-20 \
-#     za-check-handler \
-#     za-check-help-null-handler

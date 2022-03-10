@@ -42,7 +42,7 @@ if (( $+ICE[check] )) {
                     } else {
                         +zinit-message \
                             "{pre}check annex: {error}It's not true that you {uname}don't{error} have" \
-                            "{obj}${match[2]}. Packge is deleted{error}{rst}{nl}"
+                            "{obj}${match[2]}. Package is deleted{error}{rst}{nl}"
                     }
                 }
 
